@@ -1,0 +1,154 @@
+/*styles for forms*/
+
+.booking-app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    width: 700px;
+    height: 700px;
+    border-radius: 10px;
+    margin-left: 320px;
+    margin-top: 20px;
+    padding: 20px;
+    box-shadow: inset 0px 0px 5px 0px #7f8faa;
+  }
+  
+  .main-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+
+    /* Styles for the search form */
+  }
+  
+  .form-columns {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .form-column {
+    margin: 0 10px;
+    /* Styles for the form fields in each column */
+  }
+  
+  .form-column div{
+    padding: 20px;
+    gap: 20px;
+  }
+  .submit-button {
+    margin-top: 20px;
+    /* Styles for the submit button */
+  }
+  .search-form input, .form-columnss input, 
+  .form-column input, .review-form input {
+    width: 300px;
+    height: 40px;
+    padding: 5px;
+    border: 1px solid #7f8faa;
+    border-radius: 5px;
+  }
+  
+  .search-form select,
+  .form-column select {
+    width: 300px;
+    height: 40px;
+    padding: 5px;
+    border: 1px solid #7f8faa;
+    border-radius: 5px;
+  }
+  
+  .search-form textarea,
+  .form-column textarea {
+    width: 300px;
+    height: 120px;
+    padding: 5px;
+    border: 1px solid #7f8faa;
+    border-radius: 5px;
+  }
+  /*login*/
+  .form-columnss{
+    background-color: white;
+    width: 400px;
+    height: 300px;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 100px;
+    margin-left: 460px;
+    box-shadow: 0px 5px 5px #7f8faa;
+  }
+
+  .form-columnss div{
+    padding-top: 20px;
+    align-items: center;
+  }
+
+  .submits-button {
+    margin-top: 20px;
+    margin-left: 150px;
+    /* Styles for the submit button */
+  }
+  
+  .review-button{
+    margin-top: 20px;
+    margin-left: 20px;
+  }
+    /*signup*/
+    .signup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      width: 800px;
+      height: 500px;
+      border-radius: 10px;
+      margin-left: 320px;
+      margin-top: 70px;
+      padding: 20px;
+      box-shadow: inset 0px 0px 5px 0px #7f8faa;
+    }
+    .formcolumns {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+ 
+    .formcolumn div{
+      padding: 10px;
+      gap: 20px;
+    
+    }
+
+    .submit-button {
+      margin-top: 20px;
+      /* Styles for the submit button */
+    }
+
+    .formcolumn input {
+      width: 300px;
+      height: 40px;
+      padding: 10px;
+      background-color: #f0f4fa;
+      border: 1px solid #7f8faa;
+      box-shadow: 2px 2px 2px #7f8faa;
+      border-radius: 20px;
+      margin-left: 10px;
+    }
+
+    .submitbutton {
+      margin-top: 20px;
+      margin-left: 300px;
+      /* Styles for the submit button */
+    }
