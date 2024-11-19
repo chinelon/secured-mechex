@@ -1,40 +1,253 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* styling for the appointments cards shown on the dashboard line 1-34*/
+.appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+  grid-column: 2 /3;
+  grid-row: 3 / 6;
+  padding: 20px;
+  padding-top: 20px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* {
+  margin: 0px;
 }
 
-body {
-  margin: 0;
+.appointment-card {
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 5px 5px 5px #7f8faa;
+}
+
+.appointment-card div {
+  padding: 20px;
+}
+
+.view-appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+}
+
+/* styling for view mechanics component and mechanic reviews*/
+.mechanic-window{
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-gap: 20px;
+  align-items: center;
+  justify-items: center;
+}
+.appointments-card {
+  height: 500px;
+  width: 700px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 2px 2px #7f8faa;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  margin-top: 100px;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.appointments-card div {
+  padding: 20px;
+  padding-bottom: 10px;
+  flex-grow: repeat(auto-fill, minmax(300px, 1fr));
+  column-gap: 10px;
 }
 
+.arrow {
+  font-size: 100px; /* Adjust the font size to make the arrows bigger */
+  color: #7f8faa; 
+}
+.arrow div{
+  box-shadow: 0px 2px 2px #7f8faa;
+
+}
+.mechanics img {
+  width: 100px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 50%;
+ 
+}
+
+.viewreviews{
+  margin-top: 20px;
+  margin-left: 20px;
+  height: 100px;
+  overflow: auto;
+  border: solid 1px #7f8faa;
+  border-radius: 5px;
+ 
+}
+
+.reviews-container {
+  max-height: 100%;
+}
+/*track progress styling shown on the dashboard */
+.track-progress-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+}
+
+.progress-card {
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 5px 5px 5px #7f8faa;
+}
+
+.progress-card div {
+  padding: 10px;
+}
+
+/* styling for the navbar and its corresponding image*/
+.flex-container {
+  box-shadow: 0px 1px 5px #6c798d;
+padding-left: 20px;
+  color: #98adce;
+}
+
+.flex-container img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* styling the dashboard component (customer)*/
+.dashboard {
+  display: grid;
+  grid-template-columns: 200px 3fr 1fr;
+  /* Adjust the column widths as needed */
+  height: 100vh;
+  /* Set the height of the dashboard to full viewport height */
+}
+
+.sidebar {
+  padding: 20px;
+}
+
+.projects {
+  padding: 20px;
+  border-left: 2px solid #d2dae6;
+}
+
+.track {
+  background-color: #e0e5ed;
+  padding: 20px;
+}
+
+.dashboard div {
+  font-family: 'Georgia', sans-serif;
+}
+
+/* styling the dashboards component (mechanic)*/
+.dashboards {
+  display: grid;
+  grid-template-columns: 200px 2fr;
+  /* Adjust the column widths as needed */
+  height: 100vh;
+  /* Set the height of the dashboard to full viewport height */
+}
+/*welcome*/
+
+.welcome {
+  padding: 50px;
+  display: flex;
+  gap: 50px;
+}
+
+.welcome div {
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+  padding: 10px;
+  padding-top: 30px;
+  flex: 1;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 0px #7f8faa;
+}
+/*styling the side bar which can be found in the dashboard*/
+.sidebars {
+  
+font-weight: 400px;
+  padding-top: 50px;
+padding-left: 15px;
+}
+
+.sidebars div {
+  padding: 10px;
+  padding-top: 30px;
+  color: black;
+}
+
+/*styling the contact us component */
+
+.contact-us-container {
+  display: flex;
+}
+
+.contact-us-section {
+  flex: 1;
+  padding: 20px;
+  margin-left: 100px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.contact-info{
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px #6c798d;
+}
+.contact-info p {
+  margin-bottom: 10px;
+}
+
+.contact-info strong {
+  font-weight: bold;
+}
+
+/*styling the about component */
+
+.about-page {
+  display: flex;
+  margin-top: 20px;
+}
+
+.about-content {
+  flex: 1;
+  padding: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px #6c798d;
+}
+.team-members{
+  display: flex;
+}
+.team-member img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+/*global stlying for buttons in the project*/ 
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -46,23 +259,32 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-
+/*global stylings in project*/
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: #f0f4fa;
+    font-family: 'Georgia', sans-serif;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
-    background-color: #f9f9f9;
+    background-color: #f0f4fa;
+  }
+
+  a {
+    color: #1a1a1a;
   }
 }
