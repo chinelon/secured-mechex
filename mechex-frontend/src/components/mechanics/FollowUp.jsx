@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 //useParams is used to extract the parameter values from the URL path.
 import { useParams, Link } from 'react-router-dom';

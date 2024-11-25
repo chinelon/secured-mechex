@@ -19,21 +19,22 @@ import Dashboards from './components/mechanics/Dashboards';
 import FollowUp from './components/mechanics/FollowUp';
 import ViewApps from './components/mechanics/ViewApps';
 import Map from './components/customers/Map';
-import {withGoogleMaps} from 'react-google-maps'
+//import {withGoogleMaps} from 'react-google-maps'
 import ViewMech from './components/customers/ViewMech';
 
 //defines session context
 export const SessionContext = createContext();
 
 function App() {
-  const [appointments, setAppointments] = useState([]);
-  const [mechanics, setMechanics] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [progress, setProgress] = useState([]);
+  //const [appointments, setAppointments] = useState([]);
+ // const [mechanics, setMechanics] = useState([]);
+  //const [users, setUsers] = useState([]);
+ // const [progress, setProgress] = useState([]);
   const [session, setSession] = useState(null);
   const [user_id, setUser_Id] = useState()
   const [mechanic_id, setMechanic_Id] = useState()
 
+  //const navigate = useNavigate();
   /* The useEffect hook is used to perform side effects in a functional component. It accepts two arguments, 
   is executed only once when the component is mounted. 
   It checks if there is a 'session' key stored in the browser's local storage. 
@@ -62,9 +63,10 @@ function App() {
 //login function used to logout users
   const handleLogout = () => {
     alert('You are now logged out')
-    const navigate = useNavigate();
+    
     // Perform logout logic
     // ...
+    const navigate = useNavigate();
 
     // Clear the session from state and local storage
     setSession(null);

@@ -39,17 +39,17 @@ function LandPage() {
 
       <div className="testimonial">
         <div className="quote">
-          "This platform helped me find the best mechanic in town. Highly recommended!"
+          &quot;This platform helped me find the best mechanic in town. Highly recommended!&quot;
           - Ifeoma Oki
         </div>
 
         <div className="quote">
-          "This platform saved me thousands of naira by connecting me to the best mechanic in Lagos!"
+          &quot;This platform saved me thousands of naira by connecting me to the best mechanic in Lagos!&quot;
           - Olisa Oka
         </div>
 
         <div className="quote">
-          "This platform saved me so much time"
+          &quot;This platform saved me so much time&quot;
           - Bode Elliot
         </div>
 
@@ -64,9 +64,10 @@ function LandPage() {
 
 export default LandPage;
 */
-import React, { useState, useEffect } from 'react';
+
+//import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+//import axios from 'axios';
 import '../assets/Landpage.css';
 
 function LandPage() {
@@ -112,17 +113,17 @@ function LandPage() {
 
       <div className="testimonial">
         <div className="quote">
-          "This platform helped me find the best mechanic in town. Highly recommended!"
+          &quot;This platform helped me find the best mechanic in town. Highly recommended!&quot;
           - Ifeoma Oki
         </div>
 
         <div className="quote">
-          "This platform saved me thousands of naira by connecting me to the best mechanic in Lagos!"
+          &quot;This platform saved me thousands of naira by connecting me to the best mechanic in Lagos!&quot;
           - Olisa Oka
         </div>
 
         <div className="quote">
-          "This platform saved me so much time"
+          &quot;This platform saved me so much time&quot;
           - Bode Elliot
         </div>
 

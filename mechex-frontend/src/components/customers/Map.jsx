@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 //imports necessary components from the @react-google-maps/api library.
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker/*, InfoWindow*/ } from '@react-google-maps/api';
 
 function Map() {
   //The mapContainerStyle object defines the width and height of the map container
@@ -14,8 +14,8 @@ function Map() {
     lng: 3.3792, // Lagos longitude
   };
 
-//The mechanics array stores different mechanics with their  latitude, longitude, and name.
-  const mechanics = [
+//The mechanics array stores different mechanics with their latitude, longitude, and name.
+  const mechanics = useMemo(() => [
     { lat: 6.5244, lng: 3.3792, name: 'Mechanic 6' },
     { lat: 6.48045, lng: 3.35098, name: 'Oyingbo Mechanic Village' },
     { lat: 6.4302959, lng: 3.4259789, name: 'Fast Repairs Auto Garage' },
@@ -27,7 +27,7 @@ function Map() {
     { lat: 6.5245, lng: 3.3792, name: 'Mechanic 1' },
     { lat: 6.5246, lng: 3.3792, name: 'Mechanic 2' },
     { lat: 6.5249, lng: 3.3792, name: 'Mechanic 3' },
-  ];
+  ], []);
   
   //The selectedMechanic state variable is used to track the currently selected mechanic.
   const [selectedMechanic, setSelectedMechanic] = useState(null);

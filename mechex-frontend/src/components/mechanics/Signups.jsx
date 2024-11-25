@@ -1,6 +1,6 @@
 //this react component will be used to signup mechanics
 //imports axios that is used to connect to the backend 
-import React, { useState } from "react";
+import /*React,*/ { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 

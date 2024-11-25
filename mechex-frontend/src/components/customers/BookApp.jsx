@@ -1,7 +1,8 @@
 // this component allows users to book their appointments
 //imports axios that is used to connect to the backend 
 import { useNavigate, Link } from 'react-router-dom';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import '/Users/laurennwobbi/secured-mechex/secured-mechex/mechex-frontend/src/assets/Booking.css';
 
@@ -169,5 +170,9 @@ function BookApp({ user_id }) {
     </div>
   );
 }
+BookApp.propTypes = {
+  user_id: PropTypes.string.isRequired,
+};
+
 
 export default BookApp;

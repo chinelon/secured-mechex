@@ -1,7 +1,7 @@
 /** importing react from react, link from react router dom that works in navigating between components and icons from Material UI
  * a React Icon Library
  */
-import { React, useContext } from 'react';
+//import { React, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import LightbulbCircleOutlinedIcon from '@mui/icons-material/LightbulbCircleOutlined';

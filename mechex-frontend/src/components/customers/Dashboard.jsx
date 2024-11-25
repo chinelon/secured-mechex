@@ -1,5 +1,5 @@
 //imports components that will be embedded into the dashboard
-import React from 'react';
+//import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../Sidebar';
 import ViewApp from './ViewApp';
@@ -16,7 +16,7 @@ const Dashboard = () => {
     /** the imported components are rendered in the dashboard which takes on the form of a parent component */
     return (
         <div className='dashboard'>
-            <div class="sidebar">
+            <div className="sidebar">
                 <div>
                     <Sidebar />
                 </div>

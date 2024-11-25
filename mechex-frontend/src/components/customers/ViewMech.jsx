@@ -1,5 +1,5 @@
 //imports axios that is used to connect to the backend 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import profiles from '/Users/laurennwobbi/secured-mechex/secured-mechex/mechex-frontend/src/assets/profiles.jpg'
 import { Link } from 'react-router-dom';

@@ -1,8 +1,7 @@
 /*imports the sidebar component so that it can be rendered beside the contact us component for the purpose of 
 continuity within the platform and easy navigation*/
-import React from "react"
+//import React from "react"
 import Sidebar from "./Sidebar"
-
 
 function ContactUs() {
     //the return statement renders a contact us that is syled with css

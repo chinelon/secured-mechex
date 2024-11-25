@@ -1,6 +1,7 @@
 //this will allow users and mechanics to log in
-import React from "react";
+//import React from "react";
 import { useState } from "react";
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import '/Users/laurennwobbi/secured-mechex/secured-mechex/mechex-frontend/src/assets/Booking.css';
@@ -90,5 +91,8 @@ import '/Users/laurennwobbi/secured-mechex/secured-mechex/mechex-frontend/src/as
     </div>
   );
 }
+Login.propTypes = {
+  onLogin: PropTypes.func.isRequired,
+};
 
 export default Login;

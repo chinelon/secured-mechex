@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import InsightsSharpIcon from '@mui/icons-material/InsightsSharp';
 import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
@@ -38,7 +38,7 @@ function TrackProg() {
           <div>Appointment ID: {appointment.id}</div>
           <div>Description: {appointment.vehicle_description}</div>
           <div>Status: {appointment.status}</div>
-          <div>Mechanic's Notes: {appointment.notes}</div>
+          <div> Mechanic&apos;s Notes: {appointment.notes}</div>
         </div>
       ))}
     </div>

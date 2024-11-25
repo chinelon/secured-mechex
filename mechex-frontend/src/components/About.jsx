@@ -1,13 +1,13 @@
 /*imports the sidebar component so that it can be rendered beside the contact us component for the purpose of 
 continuity within the platform and easy navigation*/
-import React from 'react';
+//import React from 'react';
 import '../assets/About.css';
 import Sidebar from './Sidebar';
 import johnDoeImage from '../assets/logo.png';
 
 
 function About() {
-	    //the return statement renders a about component that is syled with css, some pictures have been added to be associated with the team members
+	//the return statement renders a about component that is syled with css, some pictures have been added to be associated with the team members
 	return (
 		<div className="about-page">
 			<Sidebar />
