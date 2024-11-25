@@ -1,9 +1,10 @@
 /*import statements for all coomponents needed to satisfy project and for react-router-dom which 
 is used for navigation through components here amongst other things*/
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect, createContext /*, useContext */} from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
+import PropTypes from 'prop-types';
 import BookApp from './components/customers/BookApp';
 import ViewApp from './components/customers/ViewApp';
 import TrackProg from './components/customers/TrackProg';
@@ -27,9 +28,9 @@ export const SessionContext = createContext();
 
 function App() {
   //const [appointments, setAppointments] = useState([]);
- // const [mechanics, setMechanics] = useState([]);
+  // const [mechanics, setMechanics] = useState([]);
   //const [users, setUsers] = useState([]);
- // const [progress, setProgress] = useState([]);
+  // const [progress, setProgress] = useState([]);
   const [session, setSession] = useState(null);
   const [user_id, setUser_Id] = useState()
   const [mechanic_id, setMechanic_Id] = useState()
@@ -60,10 +61,10 @@ function App() {
     setUser_Id(user_id); // Set the user_id in the state
     console.log(user_id)
   };
-//login function used to logout users
+  //login function used to logout users
   const handleLogout = () => {
     alert('You are now logged out')
-    
+
     // Perform logout logic
     // ...
     const navigate = useNavigate();
@@ -73,26 +74,33 @@ function App() {
     localStorage.removeItem('session');
     navigate('/login');
   };
-  
-/** line 67-72 defines a function called protected route. this function checks if there is a session in progress. if there is no session in progress 
- * users are navigated back to the login page and required to login before they can access that path, if there is no session in progress users continue 
- * that path
- */
+
+  /** line 67-72 defines a function called protected route. this function checks if there is a session in progress. if there is no session in progress 
+   * users are navigated back to the login page and required to login before they can access that path, if there is no session in progress users continue 
+   * that path
+   */
+
   const ProtectedRoute = ({ path, element }) => {
     if (!session) {
       return <Navigate to="/login" />;
     }
     return <Routes> <Route path={path} element={element} /> </Routes>
   };
+
+  ProtectedRoute.propTypes = {
+    path: PropTypes.string.isRequired,
+    element: PropTypes.element.isRequired,
+  };
+
 /** The return statement below renders the navigation bar, defines the routes to each component and calls the predefined protectedroute function to apply
- * the conditonal statement on those routes
- */
+   * the conditonal statement on those routes*/
+
   return (
     <SessionContext.Provider value={{ session, handleLogout }}>
       <Router>
         <div className="App">
           <Navbar />
-          
+
           <Routes>
             <Route path="/" element={<LandPage />} />
             <Route path="/about" element={<About />} />
@@ -113,7 +121,7 @@ function App() {
             <Route path="/mechanics/:mechanicId/*" element={<ProtectedRoute path="/" element={<ViewMech />} />} />
 
 
-            
+
           </Routes>
         </div>
       </Router>
