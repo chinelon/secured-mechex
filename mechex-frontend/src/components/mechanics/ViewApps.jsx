@@ -1,6 +1,7 @@
 import /*React,*/ { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 
 function ViewApps() {
   // creates a variable called storedMechanicId and stores the mechanic id stored in the local storage in it 
@@ -57,12 +58,12 @@ return the first part of the result whic is our date*/
       <div className="view-appointments-grid">
         {appointments.map((appointment) => (
           <div key={appointment.id} className="appointment-card">
-            <div>User: {appointment.user_id}</div>
-            <div>Mechanic: {appointment.mechanic_id}</div>
-            <div>Date: {ChangeDate(appointment.appointment_date)}</div>
-            <div>Make: {appointment.vehicle_make}</div>
-            <div>Model: {appointment.vehicle_model}</div>
-            <div>Description: {appointment.vehicle_description}</div>
+            <div>User: {DOMPurify.sanitize(appointment.user_id)}</div>
+            <div>Mechanic: {DOMPurify.sanitize(appointment.mechanic_id)}</div>
+            <div>Date: {DOMPurify.sanitize(ChangeDate(appointment.appointment_date))}</div>
+            <div>Make: {DOMPurify.sanitize(appointment.vehicle_make)}</div>
+            <div>Model: {DOMPurify.sanitize(appointment.vehicle_model)}</div>
+            <div>Description: {DOMPurify.sanitize(appointment.vehicle_description)}</div>
             <div>
               <button onClick={() => handleClick(appointment.id)}>
                 Update Progress

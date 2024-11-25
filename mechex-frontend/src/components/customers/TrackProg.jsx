@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import InsightsSharpIcon from '@mui/icons-material/InsightsSharp';
 import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
+import DOMPurify from 'dompurify';
 
 function TrackProg() {
   //uses the useState hook to define a state variable named appointments and a corresponding setter function named setAppointments.
@@ -36,9 +37,9 @@ function TrackProg() {
         <div key={appointment.id} className="progress-card">
           <AnalyticsOutlinedIcon style={{ color: '#6c798d' }}/> 
           <div>Appointment ID: {appointment.id}</div>
-          <div>Description: {appointment.vehicle_description}</div>
-          <div>Status: {appointment.status}</div>
-          <div> Mechanic&apos;s Notes: {appointment.notes}</div>
+          <div>Description: {DOMPurify.sanitize(appointment.vehicle_description)}</div>
+          <div>Status: {DOMPurify.sanitize(appointment.status)}</div>
+          <div> Mechanic&apos;s Notes: {DOMPurify.sanitize(appointment.notes) }</div>
         </div>
       ))}
     </div>

@@ -1,5 +1,6 @@
 //import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import DateRangeIcon from '@material-ui/icons/DateRange';
@@ -67,14 +68,13 @@ return the first part of the result whic is our date*/
       </div>
       <h2> <DateRangeIcon color="primary" /> View Appointments</h2>
       <div className="appointments-grid">
-
         {appointments.map((appointment) => (
           <div key={appointment.id} className="appointment-card">
             <EventAvailableTwoToneIcon color="primary" />
-            <div> Appointment Date: {ChangeDate(appointment.appointment_date)}</div>
-            <div>Vehicle Make: {appointment.vehicle_make}</div>
-            <div>Vehicle Model: {appointment.vehicle_model}</div>
-            <div>Description: {appointment.vehicle_description}</div>
+            <div> Appointment Date: {DOMPurify.sanitize(ChangeDate(appointment.appointment_date))}</div>
+            <div>Vehicle Make: {DOMPurify.sanitize(appointment.vehicle_make)}</div>
+            <div>Vehicle Model: {DOMPurify.sanitize(appointment.vehicle_model)}</div>
+            <div>Description: {DOMPurify.sanitize(appointment.vehicle_description)}</div>
           </div>
         ))}
       </div>

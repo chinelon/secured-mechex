@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import profiles from '/Users/laurennwobbi/secured-mechex/secured-mechex/mechex-frontend/src/assets/profiles.jpg'
 import { Link } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 
 function ViewMech() {
       //uses the useState hook to define a state variable and a corresponding setter function .
@@ -100,11 +101,11 @@ It uses the setCurrentMechanicIndex setter function for updating the currentMech
                     <div key={mechanics[currentMechanicIndex].id} className="appointments-card">
                         <div className='mechanics'>
                             <div> <img src={profiles} alt="Profile" /> </div>
-                            <div>{mechanics[currentMechanicIndex].name}</div>
-                            <div>{mechanics[currentMechanicIndex].phone}</div>
-                            <div>{mechanics[currentMechanicIndex].email}</div>
-                            <div>{mechanics[currentMechanicIndex].address}</div>
-                            <div>{mechanics[currentMechanicIndex].city}</div>
+                            <div>{DOMPurify.sanitize(mechanics[currentMechanicIndex].name)}</div>
+                            <div>{DOMPurify.sanitize(mechanics[currentMechanicIndex].phone)}</div>
+                            <div>{DOMPurify.sanitize(mechanics[currentMechanicIndex].email)}</div>
+                            <div>{DOMPurify.sanitize(mechanics[currentMechanicIndex].address)}</div>
+                            <div>{DOMPurify.sanitize(mechanics[currentMechanicIndex].city)}</div>
                         </div>
                         <div className="review-section">
                             <div className='viewreviews'>
@@ -120,8 +121,8 @@ It uses the setCurrentMechanicIndex setter function for updating the currentMech
                                         <tbody>
                                             {reviews.map((review) => (
                                                 <tr key={review.id}>
-                                                    <td>{review.name}</td>
-                                                    <td>{review.reviewText}</td>
+                                                    <td>{DOMPurify.sanitize(review.name)}</td>
+                                                    <td>{DOMPurify.sanitize(review.reviewText)}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
