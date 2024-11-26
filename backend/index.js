@@ -1,3 +1,8 @@
+if (!Object.hasOwn) {
+  Object.hasOwn = function(obj, prop) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
+  };
+}
 //requiring the necessary packages
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -7,7 +12,8 @@ const cors = require('cors');
 //uuid4 is used to generate a unique key for our sessionIdentifier 
 const { v4: uuidv4 } = require('uuid');
 const { query, validationResult } = require('express-validator');
-
+//import helmet from 'helmet';
+const helmet = require('helmet');
 //importing routers in index.js
 /*const usersRoute = require('./routes/usersRoute');
 app.use('/api/users', usersRoute);
@@ -32,6 +38,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy:{
+      useDefaults: true,
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+  })
+);
 
 //connection to database is setup 
 const { Pool } = require('pg');

@@ -1,7 +1,6 @@
 {
   "name": "mechex",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
@@ -17,8 +16,10 @@
     "express-session": "^1.17.3",
     "express-validator": "^7.2.0",
     "firebase": "^10.7.1",
+    "helmet": "^8.0.0",
+    "helmet-csp": "^4.0.0",
     "jsonwebtoken": "^9.0.0",
-    "node": "14.17.2",
+    "node": "^14.17.2",
     "nodemon": "^2.0.4",
     "path": "^0.12.7",
     "pg": "^8.10.0",
@@ -26,5 +27,6 @@
   },
   "engines": {
     "npm": "latest"
-  }
+  },
+  "description": ""
 }
