@@ -1,19 +1,19 @@
 if (!Object.hasOwn) {
-  Object.hasOwn = function(obj, prop) {
+  Object.hasOwn = function (obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
   };
 }
 //requiring the necessary packages
 const express = require('express');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 const app = express();
 const path = require('path');
 const cors = require('cors');
 //uuid4 is used to generate a unique key for our sessionIdentifier 
 const { v4: uuidv4 } = require('uuid');
-const { query, validationResult } = require('express-validator');
-//import helmet from 'helmet';
-const helmet = require('helmet');
+const { query, validationResult, cookie } = require('express-validator');
+const cookieParser = require('cookie-parser');
 //importing routers in index.js
 /*const usersRoute = require('./routes/usersRoute');
 app.use('/api/users', usersRoute);
@@ -27,21 +27,10 @@ app.use('/api/appointments', appointmentsRoute);
 const reviews = require('./routes/reviews');
 app.use('/api/reviews', reviews);*/
 
-
-const usersRoute = express.Router();
-const reviews = express.Router();
-const mechanicsRoute = express.Router();
-const appointmentsRoute = express.Router();
-
-/* Middleware is software that lies between an operating system and the applications running on it, and is used to manage network resources and other aspects of the system.*/
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-app.use(express.json());
 app.use(helmet());
 app.use(
   helmet({
-    contentSecurityPolicy:{
+    contentSecurityPolicy: {
       useDefaults: true,
       directives: {
         defaultSrc: ["'self'"],
@@ -51,8 +40,32 @@ app.use(
         upgradeInsecureRequests: [],
       },
     },
+    referrerPolicy: { policy: 'no-referrer' },
+    frameguard: { action: 'deny' },
+    hsts: { maxAge: 63072000, includeSubDomains: true, preload: true },
+    noSniff: true,
+    xssFilter: true,
   })
 );
+
+const usersRoute = express.Router();
+const reviews = express.Router();
+const mechanicsRoute = express.Router();
+const appointmentsRoute = express.Router();
+
+
+
+/* Middleware is software that lies between an operating system and the applications running on it, and is used to manage network resources and other aspects of the system.*/
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; upgrade-insecure-requests");
+  next();
+});
 
 //connection to database is setup 
 const { Pool } = require('pg');
@@ -72,6 +85,7 @@ pool.connect()
 app.get('/', (req, res) => {
   res.send('Landing Page');
 });
+
 
 /**
 When a user or mechanic logs in successfully, a unique session identifier is generated using uuidv4. 
@@ -109,11 +123,15 @@ app.post('/login',
           user_id,
           userType: 'customer',
         };
-
+        
+        //res.cookie('sessionIdentifier', sessionIdentifier, { httpOnly: true, secure: true, sameSite: 'Strict' });  
+        res.cookie("loggedin", true, { httpOnly: true, secure: true, sameSite: 'Strict' });
+        //res.send("cookies sent")
         //json response is sent back to the client with the success status, session identifier, user type, and user ID.
         res.json({ success: true, sessionIdentifier, userType: 'customer', user_id });
         return;
-      }
+    
+}
 
       //if the user isnt found in the users table the code gpes to check in the mechanic table using thr code below
       // Query the mechanics table
@@ -131,6 +149,8 @@ app.post('/login',
           mechanic_id,
           userType: 'mechanic',
         };
+
+        res.cookie('sessionIdentifier', sessionIdentifier, { httpOnly: true, secure: true, sameSite: 'Strict' });
 
         //json response is sent back to the client with the success status, session identifier, user type, and mechanic ID.
         res.json({ success: true, sessionIdentifier, userType: 'mechanic', mechanic_id });
@@ -328,8 +348,8 @@ mechanicsRoute.get('/:id', (req, res) => {
 });
 
 //this endpoint creates a new mechanic 
-mechanicsRoute.post('/signups',[
-  query('name').escape().trim().notEmpty().withMessage('username is required'),  
+mechanicsRoute.post('/signups', [
+  query('name').escape().trim().notEmpty().withMessage('username is required'),
   query('phone').isInt().escape().trim().notEmpty().isMobilePhone().withMessage('phone number is required'),
   query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
   query('address').escape().trim().notEmpty().withMessage('address is required'),
@@ -351,27 +371,27 @@ mechanicsRoute.post('/signups',[
 
 // Updates a mechanic by ID
 mechanicsRoute.put('/:id', [
-  query('name').escape().trim().notEmpty().withMessage('username is required'),  
+  query('name').escape().trim().notEmpty().withMessage('username is required'),
   query('phone').isInt().escape().trim().notEmpty().isMobilePhone().withMessage('phone number is required'),
   query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
   query('address').escape().trim().notEmpty().withMessage('address is required'),
-  query('city').escape().trim().notEmpty().withMessage('city is required')],  
-  
-  (req, res) => {
-  const id = parseInt(req.params.id)
-  const { name, phone, email, address, city, user_type } = req.body
+  query('city').escape().trim().notEmpty().withMessage('city is required')],
 
-  pool.query(
-    'UPDATE public.mechanics SET name = $1, phone = $2, email = $3, address = $4, city = $5, password = $6, user_type = $7 WHERE id = $6',
-    [name, phone, email, address, city, password, user_type, id],
-    (error, results) => {
-      if (error) {
-        console.log(error)
+  (req, res) => {
+    const id = parseInt(req.params.id)
+    const { name, phone, email, address, city, user_type } = req.body
+
+    pool.query(
+      'UPDATE public.mechanics SET name = $1, phone = $2, email = $3, address = $4, city = $5, password = $6, user_type = $7 WHERE id = $6',
+      [name, phone, email, address, city, password, user_type, id],
+      (error, results) => {
+        if (error) {
+          console.log(error)
+        }
+        res.status(200).send(`Mechanic modified with ID: ${results.rows[0].id}`)
       }
-      res.status(200).send(`Mechanic modified with ID: ${results.rows[0].id}`)
-    }
-  );
-});
+    );
+  });
 
 //Deletes a user by ID
 mechanicsRoute.delete('/:id', (req, res) => {
@@ -493,7 +513,7 @@ appointmentsRoute.put('/:appointment_id', [
 });
 
 //Update an appointment by ID
-appointmentsRoute.put('/:id',[
+appointmentsRoute.put('/:id', [
   query('appointment_date').isDate().withMessage('Must be a date').notEmpty,
   query('vehicle_make').escape().trim().notEmpty().withMessage('Vehicle make is required'),
   query('vehicle_model').escape().trim().notEmpty().withMessage('Vehicle model is required'),
