@@ -7,25 +7,17 @@ if (!Object.hasOwn) {
 const express = require('express');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const app = express();
 const path = require('path');
+const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+const session = require('express-session');
 //uuid4 is used to generate a unique key for our sessionIdentifier 
 const { v4: uuidv4 } = require('uuid');
-const { query, validationResult, cookie } = require('express-validator');
-const cookieParser = require('cookie-parser');
-//importing routers in index.js
-/*const usersRoute = require('./routes/usersRoute');
-app.use('/api/users', usersRoute);
+const { query, validationResult } = require('express-validator');
 
-const mechanicsRoute = require('./routes/mechanicsRoute');
-app.use('/api/mechanics', mechanicsRoute);
-
-const appointmentsRoute = require('./routes/appointmentsRoute');
-app.use('/api/appointments', appointmentsRoute);
-
-const reviews = require('./routes/reviews');
-app.use('/api/reviews', reviews);*/
+const app = express();
 
 app.use(helmet());
 app.use(
@@ -35,7 +27,6 @@ app.use(
       directives: {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'"],
-        styleSrc: ["'self'"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],
       },
@@ -53,19 +44,18 @@ const reviews = express.Router();
 const mechanicsRoute = express.Router();
 const appointmentsRoute = express.Router();
 
-
-
 /* Middleware is software that lies between an operating system and the applications running on it, and is used to manage network resources and other aspects of the system.*/
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // Frontend origin
+  credentials: true,              // Allow cookies to be sent
+}));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; upgrade-insecure-requests");
-  next();
-});
+// const csrfProtection = csrf({ cookie: true })
+// app.use(csrfProtection);
 
 //connection to database is setup 
 const { Pool } = require('pg');
@@ -96,8 +86,26 @@ The /login endpoint then responds with the success status and the generated sess
 This allows the client-side to store the session identifier in local storage.
  */
 
-// empty object used to store session data when a user logs in
-const sessions = {};
+
+// app.use((req, res, next) => {
+//   res.cookie('XSRF-TOKEN', req.csrfToken(), { httpOnly: false, sameSite: 'Strict' });
+//   next();
+// });
+
+const saltRounds = 10;
+const sessionId = uuidv4();
+
+app.use(session({
+  secret: sessionId,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: 'Strict',
+    secure: false,
+    maxAge: 3600000, // Session expiration time
+  },
+}));
 
 //defines post endpoints that handles login requests from the frontend
 app.post('/login',
@@ -114,24 +122,12 @@ app.post('/login',
 
       if (userResult.rows.length > 0) {
         //if a user is found and they are a customer
+        const user_id = userResult.rows[0].id;
+        req.session.user_id = user_id;
+        req.session.userType = 'customer';
+        return res.json({ success: true, userType: 'customer', user_id: user_id, sessionId });
 
-        const sessionIdentifier = uuidv4(); // Generate session identifier
-        const user_id = userResult.rows[0].id; // Extract user ID from the query result
-
-        // Store the session data
-        sessions[sessionIdentifier] = {
-          user_id,
-          userType: 'customer',
-        };
-        
-        //res.cookie('sessionIdentifier', sessionIdentifier, { httpOnly: true, secure: true, sameSite: 'Strict' });  
-        res.cookie("loggedin", true, { httpOnly: true, secure: true, sameSite: 'Strict' });
-        //res.send("cookies sent")
-        //json response is sent back to the client with the success status, session identifier, user type, and user ID.
-        res.json({ success: true, sessionIdentifier, userType: 'customer', user_id });
-        return;
-    
-}
+      }
 
       //if the user isnt found in the users table the code gpes to check in the mechanic table using thr code below
       // Query the mechanics table
@@ -141,20 +137,11 @@ app.post('/login',
       if (mechanicResult.rows.length > 0) {
         //if a user is found and they are a mechanic
 
-        const sessionIdentifier = uuidv4(); // Generate session identifier
         const mechanic_id = mechanicResult.rows[0].id; // Extract mechanic ID from the query result
+        req.session.mechanic_id = mechanic_id; // Store the mechanic ID in the session
+        req.session.userType = 'mechanic'; // Store the user type in the session
+        return res.json({ success: true, userType: 'mechanic', mechanic_id, sessionId });
 
-        // Store the session data
-        sessions[sessionIdentifier] = {
-          mechanic_id,
-          userType: 'mechanic',
-        };
-
-        res.cookie('sessionIdentifier', sessionIdentifier, { httpOnly: true, secure: true, sameSite: 'Strict' });
-
-        //json response is sent back to the client with the success status, session identifier, user type, and mechanic ID.
-        res.json({ success: true, sessionIdentifier, userType: 'mechanic', mechanic_id });
-        return;
       }
 
       // if User not found in either table
@@ -165,6 +152,14 @@ app.post('/login',
     }
   });
 
+// Session validation route (to check the session on each request)
+app.get('/session', (req, res) => {
+  if (req.session.user_id) {
+    res.json({ session: req.session });
+  } else {
+    res.status(401).json({ message: 'Not logged in' });
+  }
+});
 
 /**<<-----USERS ROUTES------>>>> */
 usersRoute.get('/', (req, res) => {
@@ -258,7 +253,7 @@ app.use('/users', usersRoute);
 /**<<-----REVIEWS ROUTES------>>>> */
 reviews.post('/',
   [
-    query('mechanicId').isInt().withMessage('Mechanic ID must be an integer'),
+    // query('mechanicId').isInt().withMessage('Mechanic ID must be an integer'),
     query('name').trim().escape().not().isEmpty().withMessage('Name is required'),
     query('reviewText').trim().escape().not().isEmpty().withMessage('Review text is required')
   ],
@@ -296,7 +291,6 @@ reviews.get('/mechanics/:mechanic_id', (req, res) => {
     }
   );
 });
-
 
 module.exports = reviews;
 
@@ -435,11 +429,9 @@ appointmentsRoute.get('/:id', (req, res) => {
 
 });
 
-//Creatse a new appointment
+//Creates a new appointment
 appointmentsRoute.post('/', [
-  query('user_id').isInt().withMessage('Must be a number').notEmpty,
-  query('mechanic_id').isInt().withMessage('Must be a number').notEmpty,
-  query('appointment_date').isDate().withMessage('Must be a date').notEmpty,
+
   query('vehicle_make').escape().trim().notEmpty().withMessage('Vehicle make is required'),
   query('vehicle_model').escape().trim().notEmpty().withMessage('Vehicle model is required'),
   query('vehicle_year').isInt().withMessage('Must be a number').isLength({ min: 4 }),

@@ -22,6 +22,7 @@ import ViewApps from './components/mechanics/ViewApps';
 import Map from './components/customers/Map';
 //import {withGoogleMaps} from 'react-google-maps'
 import ViewMech from './components/customers/ViewMech';
+import axios from 'axios';
 
 //defines session context
 export const SessionContext = createContext();
@@ -40,27 +41,50 @@ function App() {
   is executed only once when the component is mounted. 
   It checks if there is a 'session' key stored in the browser's local storage. 
   If a session is found, it updates the state using the setSession function with the stored session value.*/
+  // useEffect(() => {
+  //   // Check if there is a session stored in local storage
+  //   const storedSession = localStorage.getItem('session');
+  //   if (storedSession) {
+  //     setSession((storedSession));// if there is a stored session it updates the state with the stored session value
+  //   }
+  // }, []);
+
+  // //handles the login event
+  // const handleLogin = (sessionIdentifier, user_id, mechanic_id) => {
+  //   setSession(sessionIdentifier);// Sets the sessionIdentifier generated and passed from the backend in the setSession state
+  //   /**line 53-57 stores sessionIdentifier, user_id and mechanic_id in the localstorage of the browser when a user logs in.
+  //    * setMechanic_id and and setUser_Id are set with the user or mechanic id used to log in
+  //    */
+  //   localStorage.setItem('session', sessionIdentifier);
+  //   localStorage.setItem('id', user_id);
+  //   localStorage.setItem('mid', mechanic_id)
+  //   setMechanic_Id(mechanic_id);
+  //   setUser_Id(user_id); // Set the user_id in the state
+  //   console.log(user_id)
+  // };
+  const handleLogin = (sessionIdentifier, user_id, mechanic_id) => {
+    // These updates can remain for convenience in accessing user information client-side
+    setSession(sessionIdentifier); 
+    setUser_Id(user_id); 
+    setMechanic_Id(mechanic_id); 
+  };
+  
   useEffect(() => {
-    // Check if there is a session stored in local storage
-    const storedSession = localStorage.getItem('session');
-    if (storedSession) {
-      setSession((storedSession));// if there is a stored session it updates the state with the stored session value
-    }
+    const fetchSession = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/session');
+        if (response.data.session) {
+          setSession(response.data.session);
+          setUser_Id(response.data.session.user_id);
+          setMechanic_Id(response.data.session.mechanic_id);
+        }
+      } catch (error) {
+        console.error("Failed to fetch session:", error);
+      }
+    };
+    fetchSession();
   }, []);
 
-  //handles the login event
-  const handleLogin = (sessionIdentifier, user_id, mechanic_id) => {
-    setSession(sessionIdentifier);// Sets the sessionIdentifier generated and passed from the backend in the setSession state
-    /**line 53-57 stores sessionIdentifier, user_id and mechanic_id in the localstorage of the browser when a user logs in.
-     * setMechanic_id and and setUser_Id are set with the user or mechanic id used to log in
-     */
-    localStorage.setItem('session', sessionIdentifier);
-    localStorage.setItem('id', user_id);
-    localStorage.setItem('mid', mechanic_id)
-    setMechanic_Id(mechanic_id);
-    setUser_Id(user_id); // Set the user_id in the state
-    console.log(user_id)
-  };
   //login function used to logout users
   const handleLogout = () => {
     alert('You are now logged out')
