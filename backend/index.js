@@ -117,16 +117,20 @@ app.post('/login',
 
     try {
       // Query the customers table 
-      const userQuery = 'SELECT * FROM public.users WHERE email = $1 AND password = $2';
-      const userResult = await pool.query(userQuery, [email, password]);
+      const userQuery = 'SELECT * FROM public.users WHERE email = $1';
+      const userResult = await pool.query(userQuery, [email]);
 
       if (userResult.rows.length > 0) {
-        //if a user is found and they are a customer
-        const user_id = userResult.rows[0].id;
-        req.session.user_id = user_id;
-        req.session.userType = 'customer';
-        return res.json({ success: true, userType: 'customer', user_id: user_id, sessionId });
 
+        const match = await bcrypt.compare(password, userResult.rows[0].password);
+        
+        if(match){
+          //if a user is found and they are a customer
+          const user_id = userResult.rows[0].id;
+          req.session.user_id = user_id;
+          req.session.userType = 'customer';
+          return res.json({ success: true, userType: 'customer', user_id: user_id, sessionId });
+        }
       }
 
       //if the user isnt found in the users table the code gpes to check in the mechanic table using thr code below
@@ -196,8 +200,8 @@ usersRoute.post('/signup', [
 ], (req, res) => {
   const { username, password, email, phone_no, user_type } = req.body
   console.log(username, password, email, phone_no, user_type);
-
-  pool.query('INSERT INTO public.users (username, password, email, phone_no, user_type) VALUES ($1, $2, $3, $4, $5) RETURNING *', [username, password, email, phone_no, user_type], (error, results) => {
+  const hashedPassword = bcrypt.hashSync(password, saltRounds);
+  pool.query('INSERT INTO public.users (username, password, email, phone_no, user_type) VALUES ($1, $2, $3, $4, $5) RETURNING *', [username, hashedPassword, email, phone_no, user_type], (error, results) => {
     if (error) {
       console.log(error)
     } else {
@@ -353,8 +357,9 @@ mechanicsRoute.post('/signups', [
 
   const { name, phone, email, address, city, password, user_type } = req.body
   console.log(name, phone, email, address, password);
+  const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
-  pool.query('INSERT INTO public.mechanics (name, phone, email, address, city, password, user_type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [name, phone, email, address, city, password, user_type], (error, results) => {
+  pool.query('INSERT INTO public.mechanics (name, phone, email, address, city, password, user_type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [name, phone, email, address, city, hashedPassword, user_type], (error, results) => {
     if (error) {
       console.log(error)
     } else {
