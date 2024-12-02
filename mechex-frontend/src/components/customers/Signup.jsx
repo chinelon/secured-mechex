@@ -4,7 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import PasswordStrengthBar from 'react-password-strength-bar';
-
+import PasswordChecklist from 'react-password-checklist';
 function Signup() {
     //uses the useState hook to define a state variable and a corresponding setter function .
     const [username, setUsername] = useState('');
@@ -111,6 +111,17 @@ function Signup() {
                                     placeholder='Password'
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <PasswordChecklist
+                                    rules={["minLength", "specialChar", "number", "capital"]}
+                                    minLength={10}
+                                    value={password}
+                                    messages={{
+                                        minLength: "Password must be 10 characters",
+                                        specialChar: "Must have a special character.",
+                                        number: "Password must contain a number.",
+                                        capital: "Must have a captal letter.",
+                                    }}
                                 />
                                 <PasswordStrengthBar password={password} />
                             </div>
