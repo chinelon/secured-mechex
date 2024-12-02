@@ -67,6 +67,8 @@ function App() {
     setSession(sessionIdentifier); 
     setUser_Id(user_id); 
     setMechanic_Id(mechanic_id); 
+    localStorage.setItem('id', user_id);
+    localStorage.setItem('mid', mechanic_id)
   };
   
   useEffect(() => {
