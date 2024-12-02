@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import PasswordStrengthBar from 'react-password-strength-bar';
 
 function Signup() {
     //uses the useState hook to define a state variable and a corresponding setter function .
@@ -21,8 +21,8 @@ function Signup() {
         e.preventDefault();
 
         try {
-           /* tries Send a POST request to http://localhost:5002/users/signup your backend API endpoint. second part is an object that represents the data 
-      to be sent with the request.*/
+            /* tries Send a POST request to http://localhost:5002/users/signup your backend API endpoint. second part is an object that represents the data 
+       to be sent with the request.*/
 
             const response = await axios.post('http://localhost:5001/users/signup', {
                 username,
@@ -41,7 +41,7 @@ function Signup() {
             setEmail('');
             setPhone('');
             setUserType('');
-     
+
             alert('login to verify account')
             //navigates to the customers dashboard
             navigate('/login');
@@ -52,7 +52,7 @@ function Signup() {
 
     };
 
-  //the return statement renders the signup form where users input data which will be set in the state variable using the setters
+    //the return statement renders the signup form where users input data which will be set in the state variable using the setters
     return (
         <div className='signup'>
             <div className='main-form'>
@@ -112,8 +112,8 @@ function Signup() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                                <PasswordStrengthBar password={password} />
                             </div>
-
                         </div>
 
                     </div>

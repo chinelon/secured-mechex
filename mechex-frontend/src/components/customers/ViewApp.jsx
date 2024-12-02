@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import DOMPurify from 'dompurify';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import DateRangeIcon from '@material-ui/icons/DateRange';
+//import DateRangeIcon from '@material-ui/icons/DateRange';
 import EventAvailableTwoToneIcon from '@mui/icons-material/EventAvailableTwoTone';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import ViewAgendaOutlinedIcon from '@mui/icons-material/ViewAgendaOutlined';
@@ -66,7 +66,7 @@ return the first part of the result whic is our date*/
         </div>
 
       </div>
-      <h2> <DateRangeIcon color="primary" /> View Appointments</h2>
+      <h2> View Appointments</h2>
       <div className="appointments-grid">
         {appointments.map((appointment) => (
           <div key={appointment.id} className="appointment-card">

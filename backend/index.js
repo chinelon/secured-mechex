@@ -114,7 +114,10 @@ app.post('/login',
   ], async (req, res) => {
     //email and password are extracted from the request sent from frontend
     const { email, password } = req.body;
-
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {  // Check if there are validation errors
+    //   return res.status(400).json({ errors: errors.array() });
+    // } commenting this out for now
     try {
       // Query the customers table 
       const userQuery = 'SELECT * FROM public.users WHERE email = $1';
@@ -123,8 +126,8 @@ app.post('/login',
       if (userResult.rows.length > 0) {
 
         const match = await bcrypt.compare(password, userResult.rows[0].password);
-        
-        if(match){
+
+        if (match) {
           //if a user is found and they are a customer
           const user_id = userResult.rows[0].id;
           req.session.user_id = user_id;
