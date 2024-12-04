@@ -71,6 +71,7 @@ return the first part of the result whic is our date*/
         {appointments.map((appointment) => (
           <div key={appointment.id} className="appointment-card">
             <EventAvailableTwoToneIcon color="primary" />
+            {/** Input sanitisation of inputted data using dompurify */}
             <div> Appointment Date: {DOMPurify.sanitize(ChangeDate(appointment.appointment_date))}</div>
             <div>Vehicle Make: {DOMPurify.sanitize(appointment.vehicle_make)}</div>
             <div>Vehicle Model: {DOMPurify.sanitize(appointment.vehicle_model)}</div>

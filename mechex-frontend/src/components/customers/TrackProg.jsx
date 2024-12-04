@@ -37,6 +37,7 @@ function TrackProg() {
         <div key={appointment.id} className="progress-card">
           <AnalyticsOutlinedIcon style={{ color: '#6c798d' }}/> 
           <div>Appointment ID: {appointment.id}</div>
+          {/** Input sanitisation of inputted data using dompurify */}
           <div>Description: {DOMPurify.sanitize(appointment.vehicle_description)}</div>
           <div>Status: {DOMPurify.sanitize(appointment.status)}</div>
           <div> Mechanic&apos;s Notes: {DOMPurify.sanitize(appointment.notes) }</div>

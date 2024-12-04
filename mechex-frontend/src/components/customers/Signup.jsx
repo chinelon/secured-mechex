@@ -2,6 +2,7 @@
 //imports axios that is used to connect to the backend 
 import { useState } from 'react';
 import axios from 'axios';
+//Import statements for the useNaviagete hook, react-password-strength-bar and react-password-checklist components 
 import { useNavigate } from 'react-router-dom';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import PasswordChecklist from 'react-password-checklist';
@@ -112,6 +113,8 @@ function Signup() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                                {/* Password strength bar and checklist to 
+                                increase password strength in users */}
                                 <PasswordChecklist
                                     rules={["minLength", "specialChar", "number", "capital"]}
                                     minLength={10}

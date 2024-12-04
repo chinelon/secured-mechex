@@ -101,6 +101,7 @@ It uses the setCurrentMechanicIndex setter function for updating the currentMech
                     <div key={mechanics[currentMechanicIndex].id} className="appointments-card">
                         <div className='mechanics'>
                             <div> <img src={profiles} alt="Profile" /> </div>
+                            {/** Input sanitisation of inputted data using dompurify */}
                             <div>{DOMPurify.sanitize(mechanics[currentMechanicIndex].name)}</div>
                             <div>{DOMPurify.sanitize(mechanics[currentMechanicIndex].phone)}</div>
                             <div>{DOMPurify.sanitize(mechanics[currentMechanicIndex].email)}</div>
@@ -121,6 +122,7 @@ It uses the setCurrentMechanicIndex setter function for updating the currentMech
                                         <tbody>
                                             {reviews.map((review) => (
                                                 <tr key={review.id}>
+                                                    {/** Input sanitisation of inputted data using dompurify */}
                                                     <td>{DOMPurify.sanitize(review.name)}</td>
                                                     <td>{DOMPurify.sanitize(review.reviewText)}</td>
                                                 </tr>

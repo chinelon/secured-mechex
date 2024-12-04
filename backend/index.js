@@ -9,7 +9,6 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const csrf = require('csurf');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
@@ -19,6 +18,8 @@ const { query, validationResult } = require('express-validator');
 
 const app = express();
 
+/* using helmet to establish content security policy,
+referrer policy, frameguard, hsts, nosniff and xssfilter*/
 app.use(helmet());
 app.use(
   helmet({
@@ -33,7 +34,6 @@ app.use(
     },
     referrerPolicy: { policy: 'no-referrer' },
     frameguard: { action: 'deny' },
-    hsts: { maxAge: 63072000, includeSubDomains: true, preload: true },
     noSniff: true,
     xssFilter: true,
   })
@@ -54,7 +54,6 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// const csrfProtection = csrf({ cookie: true })
 // app.use(csrfProtection);
 
 //connection to database is setup 
@@ -76,6 +75,24 @@ app.get('/', (req, res) => {
   res.send('Landing Page');
 });
 
+//salt added to the password to make it more secure
+const saltRounds = 10;
+const sessionId = uuidv4();
+
+//session configuration using express-session
+app.use(session({
+  //sets the secret key for the session with sessionId generated using uuidv4
+  secret: sessionId,
+  resave: false,
+  saveUninitialized: false,
+  //sets cookie features like httpOnly, sameSite, secure and maxAge
+  cookie: {
+    httpOnly: true,
+    sameSite: 'Strict',
+    secure: false, //secure set to false as there is no ssl certificate available
+    maxAge: 3600000, // Session expiration time
+  },
+}));
 
 /**
 When a user or mechanic logs in successfully, a unique session identifier is generated using uuidv4. 
@@ -85,53 +102,34 @@ object using the session identifier as the key.
 The /login endpoint then responds with the success status and the generated session identifier. 
 This allows the client-side to store the session identifier in local storage.
  */
-
-
-// app.use((req, res, next) => {
-//   res.cookie('XSRF-TOKEN', req.csrfToken(), { httpOnly: false, sameSite: 'Strict' });
-//   next();
-// });
-
-const saltRounds = 10;
-const sessionId = uuidv4();
-
-app.use(session({
-  secret: sessionId,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    sameSite: 'Strict',
-    secure: false,
-    maxAge: 3600000, // Session expiration time
-  },
-}));
-
 //defines post endpoints that handles login requests from the frontend
 app.post('/login',
+  //data validation of the email and password fields using express-validator
   [query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
   query('password').escape().trim().notEmpty().withMessage('password is required')
   ], async (req, res) => {
     //email and password are extracted from the request sent from frontend
     const { email, password } = req.body;
-    // const errors = validationResult(req);
-    // if (!errors.isEmpty()) {  // Check if there are validation errors
-    //   return res.status(400).json({ errors: errors.array() });
-    // } commenting this out for now
+    //validation errors are checked and if there are any the errors are returned in the console
+    const errors = validationResult(req); // extracts validation errors from request
+    if (!errors.isEmpty()) {  // Check if there are validation errors
+      return res.status(400).json({ errors: errors.array() }); //returns valldation errors in an array
+    }
     try {
       // Query the customers table 
       const userQuery = 'SELECT * FROM public.users WHERE email = $1';
       const userResult = await pool.query(userQuery, [email]);
 
       if (userResult.rows.length > 0) {
-
+        /*compares hashed password in the database with the password entered by the 
+        user and puts results in a variable called match*/ 
         const match = await bcrypt.compare(password, userResult.rows[0].password);
 
-        if (match) {
+        if (match) { //if the password matches let the code below be executed
           //if a user is found and they are a customer
           const user_id = userResult.rows[0].id;
-          req.session.user_id = user_id;
-          req.session.userType = 'customer';
+          req.session.user_id = user_id; //stores user id in the session
+          req.session.userType = 'customer'; //stores user type in session
           return res.json({ success: true, userType: 'customer', user_id: user_id, sessionId });
         }
       }
@@ -196,6 +194,7 @@ usersRoute.get('/:id', (req, res) => {
 
 //this endpoint creates a new user 
 usersRoute.post('/signup', [
+  //data validation of the username, password, email and phone number fields using express-validator
   query('username').escape().trim().notEmpty().withMessage('username is required'),
   query('password').escape().trim().notEmpty().withMessage('password is required').isLength({ min: 6 }).withMessage('password must be at least 6 characters long'),
   query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
@@ -203,6 +202,8 @@ usersRoute.post('/signup', [
 ], (req, res) => {
   const { username, password, email, phone_no, user_type } = req.body
   console.log(username, password, email, phone_no, user_type);
+  //adds function to hash a password into the hashedPassword variable, using the bcrypt.hashSync function
+  //hashes the password gotten from the request body plus saltrounds and stores it in the database
   const hashedPassword = bcrypt.hashSync(password, saltRounds);
   pool.query('INSERT INTO public.users (username, password, email, phone_no, user_type) VALUES ($1, $2, $3, $4, $5) RETURNING *', [username, hashedPassword, email, phone_no, user_type], (error, results) => {
     if (error) {
@@ -215,6 +216,7 @@ usersRoute.post('/signup', [
 
 // this endpoint updates users information by their id
 usersRoute.put('/:id', [
+  //data validation of the username, password, email and phone number fields using express-validator
   query('username').escape().trim().notEmpty().withMessage('username is required'),
   query('password').escape().trim().notEmpty().withMessage('password is required').isLength({ min: 6 }).withMessage('password must be at least 6 characters long'),
   query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
@@ -260,7 +262,7 @@ app.use('/users', usersRoute);
 /**<<-----REVIEWS ROUTES------>>>> */
 reviews.post('/',
   [
-    // query('mechanicId').isInt().withMessage('Mechanic ID must be an integer'),
+    //data validation of the name and reviewText fields using express-validator
     query('name').trim().escape().not().isEmpty().withMessage('Name is required'),
     query('reviewText').trim().escape().not().isEmpty().withMessage('Review text is required')
   ],
@@ -318,21 +320,23 @@ mechanicsRoute.get('/', (req, res) => {
 
 
 //get mechanics by their city
-mechanicsRoute.get('/:city', [query('city').isString().escape()], (req, res) => {
-  const city = req.params.city
-  console.log(city)
+mechanicsRoute.get('/:city', [
+  //data validation of the city field using express-validator
+  query('city').isString().escape()], (req, res) => {
+    const city = req.params.city
+    console.log(city)
 
-  pool.query('SELECT * FROM public.mechanics WHERE "city" LIKE $1', [`%${city}%`], (error, results) => {
-    if (error) {
-      console.log(error);
-      res.status(500).json({ error: 'An error occurred while fetching mechanics' });
-    } else {
-      res.status(200).json(results.rows);
-    }
+    pool.query('SELECT * FROM public.mechanics WHERE "city" LIKE $1', [`%${city}%`], (error, results) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ error: 'An error occurred while fetching mechanics' });
+      } else {
+        res.status(200).json(results.rows);
+      }
+    });
+
+
   });
-
-
-});
 
 //this endpoint gets a mechanic by their ID
 mechanicsRoute.get('/:id', (req, res) => {
@@ -350,6 +354,7 @@ mechanicsRoute.get('/:id', (req, res) => {
 
 //this endpoint creates a new mechanic 
 mechanicsRoute.post('/signups', [
+  //data validation of the name, password, email, city address and phone number fields using express-validator
   query('name').escape().trim().notEmpty().withMessage('username is required'),
   query('phone').isInt().escape().trim().notEmpty().isMobilePhone().withMessage('phone number is required'),
   query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
@@ -373,6 +378,7 @@ mechanicsRoute.post('/signups', [
 
 // Updates a mechanic by ID
 mechanicsRoute.put('/:id', [
+  //data validation of the name, address, city, email and phone number fields using express-validator
   query('name').escape().trim().notEmpty().withMessage('username is required'),
   query('phone').isInt().escape().trim().notEmpty().isMobilePhone().withMessage('phone number is required'),
   query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
@@ -439,7 +445,7 @@ appointmentsRoute.get('/:id', (req, res) => {
 
 //Creates a new appointment
 appointmentsRoute.post('/', [
-
+  //data validation of the vehicle make, vehicle model, vehicle year and vehicle description fields using express-validator
   query('vehicle_make').escape().trim().notEmpty().withMessage('Vehicle make is required'),
   query('vehicle_model').escape().trim().notEmpty().withMessage('Vehicle model is required'),
   query('vehicle_year').isInt().withMessage('Must be a number').isLength({ min: 4 }),
@@ -492,6 +498,7 @@ appointmentsRoute.get('/mechanic/:storedMechanicId', (req, res) => {
 
 // API endpoint to update the appointment progress and notes in the database
 appointmentsRoute.put('/:appointment_id', [
+  //data validation of the status and notes fields using express-validator
   query('status').escape().trim().notEmpty().withMessage('Status is required'),
   query('notes').escape().trim().notEmpty().withMessage('Notes is required')
 ], (req, res) => {
@@ -514,6 +521,7 @@ appointmentsRoute.put('/:appointment_id', [
 
 //Update an appointment by ID
 appointmentsRoute.put('/:id', [
+  //data validation of the vehicle make, vehicle model, vehicle year and vehicle description fields using express-validator
   query('appointment_date').isDate().withMessage('Must be a date').notEmpty,
   query('vehicle_make').escape().trim().notEmpty().withMessage('Vehicle make is required'),
   query('vehicle_model').escape().trim().notEmpty().withMessage('Vehicle model is required'),

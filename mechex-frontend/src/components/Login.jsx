@@ -11,14 +11,6 @@ import '/Users/laurennwobbi/secured-mechex/secured-mechex/mechex-frontend/src/as
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  //const [csrfToken, setCsrfToken] = useState('');
-  
-  // useEffect(() => {
-  //   // Fetch the CSRF token from the cookies
-  //   const token = document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN')).split('=')[1];
-  //   setCsrfToken(token);
-  // }, []);
-
   //defines a variable 'navigate' and puts the react-router-dom function 'useNavigate' inside
   const navigate = useNavigate();
 

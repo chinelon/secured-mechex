@@ -58,6 +58,7 @@ return the first part of the result whic is our date*/
       <div className="view-appointments-grid">
         {appointments.map((appointment) => (
           <div key={appointment.id} className="appointment-card">
+            {/** Input sanitisation of inputted data using dompurify */}
             <div>User: {DOMPurify.sanitize(appointment.user_id)}</div>
             <div>Mechanic: {DOMPurify.sanitize(appointment.mechanic_id)}</div>
             <div>Date: {DOMPurify.sanitize(ChangeDate(appointment.appointment_date))}</div>
