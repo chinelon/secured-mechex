@@ -36,20 +36,20 @@ mechex-frontend/
 - **public/**: Contains static files like `index.html`.
 - **src/**: Contains the main source code.
     - **components/**: Reusable UI components.
-            - **About**: About page.
-            - **Login**: Users login page.
-            - **Customers/**: Customers components containing:
-                 - **BookApp**: For booking new appointments.
-                 - **Dashboard**: Users dashboard for viewing appointments and progress of appointments.
-                 - **Signup**: Seperate signup page for users.
-                 - **TrackProg**: View progress on vehicles.
-                 - **ViewApp**: For viewing appointments.
-                 - **ViewMech**: For viewing and making reviews on mechanics.
-            - **Mechanics/**: Mechanics components containing:
-                 - **Dashboard**: Mechanics dashboard for viewing appointments and updating progress of appointments.
-                 - **FollowUp**: For making upodates on appointments.
-                 - **ViewApps**: For viewing appointments.
-                 - **Signups**: Seperate signup page for mechanics.
+        - **About**: About page.
+        - **Login**: Users login page.
+        - **Customers/**: Customers components containing:
+            - **BookApp**: For booking new appointments.
+            - **Dashboard**: Users dashboard for viewing appointments and progress of appointments.
+            - **Signup**: Seperate signup page for users.
+            - **TrackProg**: View progress on vehicles.
+            - **ViewApp**: For viewing appointments.
+            - **ViewMech**: For viewing and making reviews on mechanics.
+        - **Mechanics/**: Mechanics components containing:
+            - **Dashboard**: Mechanics dashboard for viewing appointments and updating progress of appointments.
+            - **FollowUp**: For making upodates on appointments.
+            - **ViewApps**: For viewing appointments.
+            - **Signups**: Seperate signup page for mechanics.
     - **App.js**: Main application component.
     - **index.js**: Entry point of the application.
 - **package.json**: Lists dependencies and scripts.
