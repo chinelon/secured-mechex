@@ -82,7 +82,6 @@ function BookApp({ user_id }) {
         setVehicle_Model('');
         setVehicle_Year('');
         setVehicle_Description('');
-        //setUser_Id('');
 
         //navigates users back to view appointments
         navigate('/appointments');

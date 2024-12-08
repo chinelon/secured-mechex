@@ -53,8 +53,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
-
-// app.use(csrfProtection);
+app.disable('x-powered-by');
 
 //connection to database is setup 
 const { Pool } = require('pg');
@@ -81,6 +80,7 @@ const sessionId = uuidv4();
 
 //session configuration using express-session
 app.use(session({
+  name: 'secured-mechex-session',
   //sets the secret key for the session with sessionId generated using uuidv4
   secret: sessionId,
   resave: false,
