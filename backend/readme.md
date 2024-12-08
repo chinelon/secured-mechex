@@ -72,5 +72,61 @@ This is the backend for the Mechex project, which provides APIs for user authent
 4. Cookie-Parser: For parsing cookies.
 5. Express-Session: For managing sessions.
 
+# Security Improvements
+1. Helmet Middleware: Used to set various HTTP headers for security purposes.
+    ```sh 
+        app.use(helmet());
+        app.use(
+        helmet({
+            contentSecurityPolicy: {
+            useDefaults: true,
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'"],
+                objectSrc: ["'none'"],
+                upgradeInsecureRequests: [],
+            },
+            },
+            referrerPolicy: { policy: 'no-referrer' },
+            frameguard: { action: 'deny' },
+            noSniff: true,
+            xssFilter: true,
+        })
+        );
+    ```
+
+2. CORS Middleware: Used to allow requests from the frontend origin and allow credentials to be sent.
+    ```sh
+        app.use(cors({
+        origin: 'http://localhost:5173', 
+        credentials: true,              
+        }));
+    ```
+
+3. Express-session: For secure session management.
+
+    ```sh
+        app.use(session({
+        name: 'secured-mechex-session',
+        secret: sessionId,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            sameSite: 'Strict',
+            secure: false, // Set to true if using HTTPS
+            maxAge: 3600000, // Session expiration time
+        },
+        }));
+    ```
+
+4. Password Hashing: passwords are hashed and stored in the database and comapared against passwords at login.
+
+    ```sh
+    const hashedPassword = bcrypt.hashSync(password, saltRounds);
+    
+    const match = await bcrypt.compare(password, userResult.rows[0].password);
+
+    ```
 # Database
 The backend uses PostgreSQL as the database. Ensure that you have PostgreSQL installed and running. 
