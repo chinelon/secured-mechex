@@ -66,21 +66,11 @@ This is the backend for the Mechex project, which provides APIs for user authent
 
 # Middleware
 
-*Helmet*: For security headers.
-*CORS*: For handling Cross-Origin Resource Sharing.
-*Body-Parser*: For parsing request bodies.
-*Cookie-Parser*: For parsing cookies.
-*Express-Session*: For managing sessions.
+1. Helmet: For security headers.
+2. CORS: For handling Cross-Origin Resource Sharing.
+3. Body-Parser: For parsing request bodies.
+4. Cookie-Parser: For parsing cookies.
+5. Express-Session: For managing sessions.
 
 # Database
 The backend uses PostgreSQL as the database. Ensure that you have PostgreSQL installed and running. 
-
-License
-This project is licensed under the ISC License. See the LICENSE file for details.
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
