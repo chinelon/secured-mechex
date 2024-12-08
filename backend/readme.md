@@ -34,9 +34,9 @@ This is the backend for the Mechex project, which provides APIs for user authent
     nodemon index.js
     ````
 
-## API Endpoints
+# API Endpoints
 
-# User Routes
+## User Routes
 
 1. GET /users: Get all users.
 2. GET /users/:id: Get a user by ID.
@@ -44,7 +44,7 @@ This is the backend for the Mechex project, which provides APIs for user authent
 4. PUT /users/:id: Update a user by ID.
 5. DELETE /users/:id: Delete a user by ID.
 
-# Mechanic Routes
+## Mechanic Routes
 
 1. GET /mechanics: Get all mechanics.
 2. GET /mechanics/:city: Get mechanics by city.
@@ -53,23 +53,27 @@ This is the backend for the Mechex project, which provides APIs for user authent
 5. PUT /mechanics/:id: Update a mechanic by ID.
 6. DELETE /mechanics/:id: Delete a mechanic by ID.
 
-# Appointment Routes
-GET /appointments: Get all appointments.
-GET /appointments/:id: Get an appointment by ID.
-POST /appointments: Create a new appointment.
-PUT /appointments/:id: Update an appointment by ID.
-DELETE /appointments/:id: Delete an appointment by ID.
-Review Routes
-POST /reviews: Create a new review.
-GET /reviews/mechanics/:mechanic_id: Get all reviews for a specific mechanic.
-Middleware
-Helmet: For security headers.
-CORS: For handling Cross-Origin Resource Sharing.
-Body-Parser: For parsing request bodies.
-Cookie-Parser: For parsing cookies.
-Express-Session: For managing sessions.
-Database
-The backend uses PostgreSQL as the database. Ensure that you have PostgreSQL installed and running. Update the connection details in the .env file.
+## Appointment Routes
+1. GET /appointments: Get all appointments.
+2. GET /appointments/:id: Get an appointment by ID.
+3. POST /appointments: Create a new appointment.
+4. PUT /appointments/:id: Update an appointment by ID.
+5. DELETE /appointments/:id: Delete an appointment by ID.
+
+## Review Routes
+1. POST /reviews: Create a new review.
+2. GET /reviews/mechanics/:mechanic_id: Get all reviews for a specific mechanic.
+
+# Middleware
+
+*Helmet*: For security headers.
+*CORS*: For handling Cross-Origin Resource Sharing.
+*Body-Parser*: For parsing request bodies.
+*Cookie-Parser*: For parsing cookies.
+*Express-Session*: For managing sessions.
+
+# Database
+The backend uses PostgreSQL as the database. Ensure that you have PostgreSQL installed and running. 
 
 License
 This project is licensed under the ISC License. See the LICENSE file for details.
