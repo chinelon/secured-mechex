@@ -83,6 +83,7 @@ It uses the setCurrentMechanicIndex setter function for updating the currentMech
             console.log(response.data);
         } catch (error) {
             console.log(error);
+            alert('Check form and try again')
             //  can handle the error response as needed
         }
     };

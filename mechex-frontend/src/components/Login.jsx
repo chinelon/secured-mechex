@@ -54,6 +54,7 @@ import '/Users/laurennwobbi/secured-mechex/secured-mechex/mechex-frontend/src/as
       }
     } catch (error) {
       console.error('Error during login:', error);
+      alert ("Login failed, Please check credentials and try again");
       // Handle error
     }
   };

@@ -2,7 +2,7 @@
 is used for navigation through components here amongst other things*/
 import { useState, useEffect, createContext /*, useContext */} from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import './index.css';
 import PropTypes from 'prop-types';
 import BookApp from './components/customers/BookApp';
@@ -87,19 +87,6 @@ function App() {
     fetchSession();
   }, []);
 
-  //login function used to logout users
-  const handleLogout = () => {
-    alert('You are now logged out')
-
-    // Perform logout logic
-    // ...
-    const navigate = useNavigate();
-
-    // Clear the session from state and local storage
-    setSession(null);
-    localStorage.removeItem('session');
-    navigate('/login');
-  };
 
   /** line 67-72 defines a function called protected route. this function checks if there is a session in progress. if there is no session in progress 
    * users are navigated back to the login page and required to login before they can access that path, if there is no session in progress users continue 
@@ -122,7 +109,7 @@ function App() {
    * the conditonal statement on those routes*/
 
   return (
-    <SessionContext.Provider value={{ session, handleLogout }}>
+    <SessionContext.Provider value={{ session }}>
       <Router>
         <div className="App">
           <Navbar />

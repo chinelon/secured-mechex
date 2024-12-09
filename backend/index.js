@@ -111,10 +111,10 @@ app.post('/login',
     //email and password are extracted from the request sent from frontend
     const { email, password } = req.body;
     //validation errors are checked and if there are any the errors are returned in the console
-    const errors = validationResult(req); // extracts validation errors from request
-    if (!errors.isEmpty()) {  // Check if there are validation errors
-      return res.status(400).json({ errors: errors.array() }); //returns valldation errors in an array
-    }
+    // const errors = validationResult(req); // extracts validation errors from request
+    // if (!errors.isEmpty()) {  // Check if there are validation errors
+    //   return res.status(400).json({ errors: errors.array() }); //returns valldation errors in an array
+    // }
     try {
       // Query the customers table 
       const userQuery = 'SELECT * FROM public.users WHERE email = $1';
@@ -122,7 +122,7 @@ app.post('/login',
 
       if (userResult.rows.length > 0) {
         /*compares hashed password in the database with the password entered by the 
-        user and puts results in a variable called match*/ 
+        user and puts results in a variable called match*/
         const match = await bcrypt.compare(password, userResult.rows[0].password);
 
         if (match) { //if the password matches let the code below be executed
@@ -136,28 +136,44 @@ app.post('/login',
 
       //if the user isnt found in the users table the code gpes to check in the mechanic table using thr code below
       // Query the mechanics table
-      const mechanicQuery = 'SELECT * FROM public.mechanics WHERE email = $1 AND password = $2';
-      const mechanicResult = await pool.query(mechanicQuery, [email, password]);
+      const mechanicQuery = 'SELECT * FROM public.mechanics WHERE email = $1';
+      const mechanicResult = await pool.query(mechanicQuery, [email]);
 
       if (mechanicResult.rows.length > 0) {
+        /*compares hashed password in the database with the password entered by the 
+        user and puts results in a variable called match*/
+        const match = await bcrypt.compare(password, mechanicResult.rows[0].password);
         //if a user is found and they are a mechanic
-
-        const mechanic_id = mechanicResult.rows[0].id; // Extract mechanic ID from the query result
-        req.session.mechanic_id = mechanic_id; // Store the mechanic ID in the session
-        req.session.userType = 'mechanic'; // Store the user type in the session
-        return res.json({ success: true, userType: 'mechanic', mechanic_id, sessionId });
+        if (match) {
+          const mechanic_id = mechanicResult.rows[0].id; // Extract mechanic ID from the query result
+          req.session.mechanic_id = mechanic_id; // Store the mechanic ID in the session
+          req.session.userType = 'mechanic'; // Store the user type in the session
+          return res.json({ success: true, userType: 'mechanic', mechanic_id, sessionId });
+        }
 
       }
 
       // if User not found in either table
-      res.json({ success: false });
+      res.json({ success: false }, errors);
     } catch (error) {
       console.error('Error during login:', error);
       res.status(500).json({ success: false, error: 'An error occurred during login' });
     }
   });
 
-// Session validation route (to check the session on each request)
+//handles logout  =
+app.post('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).send('Failed to log out');
+    }
+    res.clearCookie('secured-mechex-session'); // Clear the session cookie
+    console.log('Session destroyed and cookie cleared');
+    res.send('Logged out');
+  });
+});
+
+// Session validation route to check the session on each request)
 app.get('/session', (req, res) => {
   if (req.session.user_id) {
     res.json({ session: req.session });
@@ -200,6 +216,11 @@ usersRoute.post('/signup', [
   query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
   query('phone_no').isInt().escape().trim().notEmpty().isMobilePhone().withMessage('phone number is required'),
 ], (req, res) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { username, password, email, phone_no, user_type } = req.body
   console.log(username, password, email, phone_no, user_type);
   //adds function to hash a password into the hashedPassword variable, using the bcrypt.hashSync function
@@ -222,6 +243,11 @@ usersRoute.put('/:id', [
   query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
   query('phone_no').isInt().escape().trim().notEmpty().isMobilePhone().withMessage('phone number is required'),
 ], (req, res) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
   const id = parseInt(req.params.id)
   const { username, password, email, phone_no } = req.body
@@ -267,6 +293,10 @@ reviews.post('/',
     query('reviewText').trim().escape().not().isEmpty().withMessage('Review text is required')
   ],
   (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const { mechanicId, name, reviewText } = req.body;
 
     pool.query('INSERT INTO public.reviews (mechanic_id, name, "reviewText") VALUES ($1, $2, $3) RETURNING *',
@@ -323,6 +353,10 @@ mechanicsRoute.get('/', (req, res) => {
 mechanicsRoute.get('/:city', [
   //data validation of the city field using express-validator
   query('city').isString().escape()], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const city = req.params.city
     console.log(city)
 
@@ -356,12 +390,16 @@ mechanicsRoute.get('/:id', (req, res) => {
 mechanicsRoute.post('/signups', [
   //data validation of the name, password, email, city address and phone number fields using express-validator
   query('name').escape().trim().notEmpty().withMessage('username is required'),
-  query('phone').isInt().escape().trim().notEmpty().isMobilePhone().withMessage('phone number is required'),
+  query('phone').isInt().escape().trim().notEmpty().withMessage('phone number is required'),
   query('email').escape().trim().notEmpty().isEmail().withMessage('email is required'),
   query('address').escape().trim().notEmpty().withMessage('address is required'),
   query('city').escape().trim().notEmpty().withMessage('city is required'),
   query('password').escape().trim().notEmpty().withMessage('password is required').isLength({ min: 6 }).withMessage('password must be at least 6 characters long'),
 ], (req, res) => {
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({ errors: errors.array() });
+  // }
 
   const { name, phone, email, address, city, password, user_type } = req.body
   console.log(name, phone, email, address, password);
@@ -386,6 +424,10 @@ mechanicsRoute.put('/:id', [
   query('city').escape().trim().notEmpty().withMessage('city is required')],
 
   (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const id = parseInt(req.params.id)
     const { name, phone, email, address, city, user_type } = req.body
 
@@ -451,6 +493,10 @@ appointmentsRoute.post('/', [
   query('vehicle_year').isInt().withMessage('Must be a number').isLength({ min: 4 }),
   query('vehicle_description').escape().trim().notEmpty().withMessage('Vehicle description is required')
 ], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { user_id, mechanic_id, appointment_date, vehicle_make, vehicle_model, vehicle_year, vehicle_description } = req.body
 
   pool.query('INSERT INTO public.appointments (user_id, mechanic_id, appointment_date, vehicle_make, vehicle_model, vehicle_year, vehicle_description) VALUES ($1, $2, $3, $4, $5, $6, $7 ) RETURNING *', [user_id, mechanic_id, appointment_date, vehicle_make, vehicle_model, vehicle_year, vehicle_description], (error, results) => {
@@ -502,6 +548,10 @@ appointmentsRoute.put('/:appointment_id', [
   query('status').escape().trim().notEmpty().withMessage('Status is required'),
   query('notes').escape().trim().notEmpty().withMessage('Notes is required')
 ], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const appointment_id = parseInt(req.params.appointment_id);
   const { status, notes } = req.body;
 
@@ -528,6 +578,10 @@ appointmentsRoute.put('/:id', [
   query('vehicle_year').isInt().withMessage('Must be a number').isLength({ min: 4 }),
   query('vehicle_description').escape().trim().notEmpty().withMessage('Vehicle description is required')
 ], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const id = parseInt(req.params.id)
   const { appointment_date, vehicle_make, vehicle_model, vehicle_year, vehicle_description } = req.body
 

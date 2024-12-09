@@ -85,17 +85,17 @@ mechex-frontend/
 
     ```sh
         <PasswordChecklist
-                                    rules={["minLength", "specialChar", "number", "capital"]}
-                                    minLength={10}
-                                    value={password}
-                                    messages={{
-                                        minLength: "Password must be 10 characters",
-                                        specialChar: "Must have a special character.",
-                                        number: "Password must contain a number.",
-                                        capital: "Must have a captal letter.",
-                                    }}
-                                />
-                                <PasswordStrengthBar password={password} />
+            rules={["minLength", "specialChar", "number", "capital"]}
+            minLength={10}
+            value={password}
+            messages={{
+                minLength: "Password must be 10 characters",
+                specialChar: "Must have a special character.",
+                number: "Password must contain a number.",
+                capital: "Must have a captal letter.",
+            }}
+        />
+        <PasswordStrengthBar password={password} />
     ```
 - **Data Sanitisation**: Ensured all user inputs are sanitized.
     ```sh

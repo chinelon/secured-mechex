@@ -88,6 +88,7 @@ function BookApp({ user_id }) {
       } catch (error) {
         // Handle any errors that occurred during the signup process
         console.error(error);
+        alert('Check form and try again')
       }
     } else {
       alert('Please select a mechanic')
