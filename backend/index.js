@@ -115,6 +115,7 @@ app.post('/login',
     // if (!errors.isEmpty()) {  // Check if there are validation errors
     //   return res.status(400).json({ errors: errors.array() }); //returns valldation errors in an array
     // }
+   
     try {
       // Query the customers table 
       const userQuery = 'SELECT * FROM public.users WHERE email = $1';
@@ -217,10 +218,6 @@ usersRoute.post('/signup', [
   query('phone_no').isInt().escape().trim().notEmpty().isMobilePhone().withMessage('phone number is required'),
 ], (req, res) => {
 
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   const { username, password, email, phone_no, user_type } = req.body
   console.log(username, password, email, phone_no, user_type);
   //adds function to hash a password into the hashedPassword variable, using the bcrypt.hashSync function
@@ -229,6 +226,10 @@ usersRoute.post('/signup', [
   pool.query('INSERT INTO public.users (username, password, email, phone_no, user_type) VALUES ($1, $2, $3, $4, $5) RETURNING *', [username, hashedPassword, email, phone_no, user_type], (error, results) => {
     if (error) {
       console.log(error)
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
     } else {
       res.status(201).send(`User added with ID: ${results.rows[0].id}`)
     }
@@ -293,10 +294,7 @@ reviews.post('/',
     query('reviewText').trim().escape().not().isEmpty().withMessage('Review text is required')
   ],
   (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  
     const { mechanicId, name, reviewText } = req.body;
 
     pool.query('INSERT INTO public.reviews (mechanic_id, name, "reviewText") VALUES ($1, $2, $3) RETURNING *',
@@ -305,6 +303,10 @@ reviews.post('/',
         if (error) {
           console.log(error);
           res.status(500).json({ error: 'An error occurred while creating the review' });
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+          }
         } else {
           res.status(201).json({ message: 'Review created successfully' });
         }
@@ -396,10 +398,6 @@ mechanicsRoute.post('/signups', [
   query('city').escape().trim().notEmpty().withMessage('city is required'),
   query('password').escape().trim().notEmpty().withMessage('password is required').isLength({ min: 6 }).withMessage('password must be at least 6 characters long'),
 ], (req, res) => {
-  // const errors = validationResult(req);
-  // if (!errors.isEmpty()) {
-  //   return res.status(400).json({ errors: errors.array() });
-  // }
 
   const { name, phone, email, address, city, password, user_type } = req.body
   console.log(name, phone, email, address, password);
@@ -408,6 +406,10 @@ mechanicsRoute.post('/signups', [
   pool.query('INSERT INTO public.mechanics (name, phone, email, address, city, password, user_type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [name, phone, email, address, city, hashedPassword, user_type], (error, results) => {
     if (error) {
       console.log(error)
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
     } else {
       res.status(201).send(`Mechanic added with ID: ${results.rows[0].id}`)
     }
@@ -424,10 +426,6 @@ mechanicsRoute.put('/:id', [
   query('city').escape().trim().notEmpty().withMessage('city is required')],
 
   (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
     const id = parseInt(req.params.id)
     const { name, phone, email, address, city, user_type } = req.body
 
@@ -437,6 +435,10 @@ mechanicsRoute.put('/:id', [
       (error, results) => {
         if (error) {
           console.log(error)
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+          }
         }
         res.status(200).send(`Mechanic modified with ID: ${results.rows[0].id}`)
       }
@@ -493,16 +495,15 @@ appointmentsRoute.post('/', [
   query('vehicle_year').isInt().withMessage('Must be a number').isLength({ min: 4 }),
   query('vehicle_description').escape().trim().notEmpty().withMessage('Vehicle description is required')
 ], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   const { user_id, mechanic_id, appointment_date, vehicle_make, vehicle_model, vehicle_year, vehicle_description } = req.body
 
   pool.query('INSERT INTO public.appointments (user_id, mechanic_id, appointment_date, vehicle_make, vehicle_model, vehicle_year, vehicle_description) VALUES ($1, $2, $3, $4, $5, $6, $7 ) RETURNING *', [user_id, mechanic_id, appointment_date, vehicle_make, vehicle_model, vehicle_year, vehicle_description], (error, results) => {
     if (error) {
       console.log(error)
-
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
     } else if (!user_id) {
       return res.status(400).json({ error: 'Invalid userId' });
     } else {
@@ -548,10 +549,6 @@ appointmentsRoute.put('/:appointment_id', [
   query('status').escape().trim().notEmpty().withMessage('Status is required'),
   query('notes').escape().trim().notEmpty().withMessage('Notes is required')
 ], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   const appointment_id = parseInt(req.params.appointment_id);
   const { status, notes } = req.body;
 
@@ -561,6 +558,10 @@ appointmentsRoute.put('/:appointment_id', [
     (error, results) => {
       if (error) {
         console.log(error);
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(400).json({ errors: errors.array() });
+        }
         return res.status(500).json({ error: 'An error occurred while updating appointment progress' });
       }
       console.log('Received data:', { status, notes });
@@ -578,10 +579,6 @@ appointmentsRoute.put('/:id', [
   query('vehicle_year').isInt().withMessage('Must be a number').isLength({ min: 4 }),
   query('vehicle_description').escape().trim().notEmpty().withMessage('Vehicle description is required')
 ], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   const id = parseInt(req.params.id)
   const { appointment_date, vehicle_make, vehicle_model, vehicle_year, vehicle_description } = req.body
 
@@ -591,6 +588,10 @@ appointmentsRoute.put('/:id', [
     (error, results) => {
       if (error) {
         console.log(error)
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(400).json({ errors: errors.array() });
+        }
       }
       res.status(200).send(`Mechanic modified with ID: ${results.rows[0].id}`)
     }

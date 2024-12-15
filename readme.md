@@ -26,3 +26,8 @@ secured-mechex/
 ├── mechex-frontend/
 └── backend
 ```
+
+### Testing
+SAST Testing was done using Bearer Scan, the project folder was scanned using bearer scan secured-mechex and a report was generated from it, following that a summary table of results was created and can be found in the Appendix. For functional testing was carried out by testing specific functions of the project in which all tests were passed.
+
+Check readme files in backend and mechex frontend folders for more information
